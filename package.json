@@ -14,7 +14,9 @@
   "dependencies": {
     "cassandra-driver": "^4.6.4",
     "express": "^4.18.2",
-    "mongoose": "^7.0.3"
+    "express-fileupload": "^1.4.0",
+    "mongoose": "^7.0.3",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

@@ -1,66 +1,53 @@
-import Admin from "../Classes/Admin.js";
+import AdminService from "../Services/AdminService.js";
 
 class AdminController{
     async create(req, res){
         try {
-            const {login, email, password} = req.body
-            const admin = await Admin.create({login, email, password})
+            const admin = await AdminService.create(req.body)
             res.status(200).json(admin)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async getAll(req, res){
         try {
-            const admins = await Admin.find();
+            const admins = await AdminService.getAll()
             return res.json(admins)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async getOne(req, res){
         try {
-            const {id} = req.params
-            if(!id){
-                res.status(400).json("Id не указан")
-            }
-            const admin = await Admin.findById(id);
+            const admin = await AdminService.getOne(req.params.id)
             return res.json(admin)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async update(req, res){
         try {
-            const admin = req.body
-            if(!admin._id){
-                res.status(400).json("Id не указан")
-            }
-            const updatedAdmin = await  Admin.findByIdAndUpdate(admin._id, admin, {new: true})
+            const updatedAdmin = await AdminService.update(req.body)
             return res.json(updatedAdmin)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async delete(req, res){
         try {
-            const {id} = req.params
-            if(!id){
-                res.status(400).json("Id не указан")
-            }
-            const admin = await Admin.findByIdAndDelete(id)
+            const admin = await AdminService.delete(req.params.id)
             return res.json(admin)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 }

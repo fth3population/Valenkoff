@@ -1,66 +1,53 @@
-import User from "../Classes/User.js";
+import UserService from "../Services/UserService.js";
 
 class UserController{
     async create(req, res){
         try {
-            const {username, email, password, likes} = req.body
-            const user = await User.create({username, email, password, likes})
+            const user = await UserService.create(req.body)
             res.status(200).json(user)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async getAll(req, res){
         try {
-            const users = await User.find();
+            const users = await UserService.getAll()
             return res.json(users)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async getOne(req, res){
         try {
-            const {id} = req.params
-            if(!id){
-                res.status(400).json("Id не указан")
-            }
-            const user = await User.findById(id);
+            const user = await UserService.getOne(req.params.id)
             return res.json(user)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async update(req, res){
         try {
-            const user = req.body
-            if(!user._id){
-                res.status(400).json("Id не указан")
-            }
-            const updatedUser = await  User.findByIdAndUpdate(user._id, user, {new: true})
+            const updatedUser = await UserService.update(req.body)
             return res.json(updatedUser)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async delete(req, res){
         try {
-            const {id} = req.params
-            if(!id){
-                res.status(400).json("Id не указан")
-            }
-            const user = await User.findByIdAndDelete(id)
+            const user = await UserService.delete(req.params.id)
             return res.json(user)
         }
         catch (e){
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 }
