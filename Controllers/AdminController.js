@@ -1,11 +1,11 @@
-import User from "./User.js";
+import Admin from "../Classes/Admin.js";
 
-class UserController{
+class AdminController{
     async create(req, res){
         try {
-            const {username, email, password, likes} = req.body
-            const user = await User.create({username, email, password, likes})
-            res.status(200).json(user)
+            const {login, email, password} = req.body
+            const admin = await Admin.create({login, email, password})
+            res.status(200).json(admin)
         }
         catch (e){
             res.status(500).json(e)
@@ -14,8 +14,8 @@ class UserController{
 
     async getAll(req, res){
         try {
-            const users = await User.find();
-            return res.json(users)
+            const admins = await Admin.find();
+            return res.json(admins)
         }
         catch (e){
             res.status(500).json(e)
@@ -28,8 +28,8 @@ class UserController{
             if(!id){
                 res.status(400).json("Id не указан")
             }
-            const user = await User.findById(id);
-            return res.json(user)
+            const admin = await Admin.findById(id);
+            return res.json(admin)
         }
         catch (e){
             res.status(500).json(e)
@@ -38,12 +38,12 @@ class UserController{
 
     async update(req, res){
         try {
-            const user = req.body
-            if(!user._id){
+            const admin = req.body
+            if(!admin._id){
                 res.status(400).json("Id не указан")
             }
-            const updatedUser = await  User.findByIdAndUpdate(user._id, user, {new: true})
-            return res.json(updatedUser)
+            const updatedAdmin = await  Admin.findByIdAndUpdate(admin._id, admin, {new: true})
+            return res.json(updatedAdmin)
         }
         catch (e){
             res.status(500).json(e)
@@ -56,8 +56,8 @@ class UserController{
             if(!id){
                 res.status(400).json("Id не указан")
             }
-            const user = await User.findByIdAndDelete(id)
-            return res.json(user)
+            const admin = await Admin.findByIdAndDelete(id)
+            return res.json(admin)
         }
         catch (e){
             res.status(500).json(e)
@@ -66,4 +66,4 @@ class UserController{
 }
 
 
-export default new UserController()
+export default new AdminController()
