@@ -4,7 +4,7 @@ const User = new mongoose.Schema({
     username: {type:String,required:true},
     email: {type:String,required:true},
     password: {type:String,required:true},
-    likes: {type:[Number],required:true},
+    likes: {type:[Number]},
 });
 
 export default mongoose.model('User', User)

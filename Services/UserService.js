@@ -1,8 +1,8 @@
 import User from "../Classes/User.js";
 
 class UserService {
-    async create(user) {
-        const createdUser = await User.create(user)
+    async create(username, email, password, likes) {
+        const createdUser = await User.create({username: username, email: email, password: password, likes: likes})
         return createdUser
     }
 
