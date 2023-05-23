@@ -1,33 +1,34 @@
 import express from 'express';
+import dotenv from 'dotenv'
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import routerUser from "./Routers/routerUser.js";
-import routerAdmin from "./Routers/routerAdmin.js";
 import routerMeme from "./Routers/routerMeme.js";
 import routerPattern from "./Routers/routerPattern.js";
-import AdminController from "./Controllers/AdminController.js";
-import Admin from "./Classes/Admin.js";
-import User from "./Classes/User.js";
+import errorMiddleware from "./middlewares/error-middleware.js";
 
-const PORT = 5000
+dotenv.config()
+const PORT = process.env.PORT
 
 const app = express()
-const DB_URL = 'mongodb+srv://fth3population:mamapapa@cluster0.zldp8dx.mongodb.net/?retryWrites=true&w=majority'
+const DB_URL = process.env.DB_URL
 
 app.use(express.json())
 app.use(fileUpload({}))
+app.use(cookieParser())
 app.use(express.static('static'))
 app.use('/api_memes', routerMeme)
 app.use('/api_patterns', routerPattern)
-app.use('/user', routerUser)
-app.use('/admin', routerAdmin)
+app.use('/api', routerUser)
+app.use(errorMiddleware)
 
 async function startApp() {
     try {
         await mongoose.connect(DB_URL)
         app.listen(PORT, () => console.log("Server started on port " + PORT))
-        const user = await User.findOne({username: "McPing"})
-        console.log(user.username)
+        /*const user = await User.findOne({username: "McPing"})
+        console.log(user.username)*/
         /*const admins = await Admin.findById("64281ef451e8eff9bbff6c9b");
         const admin = new Admin({
             login: admins.login,

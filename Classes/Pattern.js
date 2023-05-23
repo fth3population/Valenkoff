@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const Pattern = new mongoose.Schema({
-    hashtag: {type:[String]},
+    hashtag: [{type:String}],
     img: {type:String, required:true},
 });
 
