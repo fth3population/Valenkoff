@@ -22,8 +22,8 @@ class UserService {
         return {...tokens, user: userDto}
     }
 
-    async login(username, password){
-        const user = await User.findOne({username: username})
+    async login(email, password){
+        const user = await User.findOne({email: email})
         if(!user){
             throw ApiError.BadRequest('Пользователь с таким email не найден')
         }
