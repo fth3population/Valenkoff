@@ -2,9 +2,9 @@ import Pattern from "../Classes/Pattern.js";
 import fileService from "./FileService.js";
 
 class PatternService {
-    async create(pattern, img) {
+    async create(hashtag, img) {
         const fileName = fileService.saveFile(img)
-        const createdPattern = await Pattern.create({...pattern, img: fileName})
+        const createdPattern = await Pattern.create({...hashtag, img: fileName})
         return createdPattern
     }
 

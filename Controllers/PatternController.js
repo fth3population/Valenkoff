@@ -1,13 +1,13 @@
 import PatternService from "../Services/PatternService.js";
 
 class PatternController{
-    async create(req, res){
+    async create(req, res, next){
         try {
             const pattern = await PatternService.create(req.body, req.files.img)
-            res.status(200).json(pattern)
+            return res.json(pattern)
         }
         catch (e){
-            res.status(500).json(e.message)
+            next(e)
         }
     }
 

@@ -1,8 +1,8 @@
 import Meme from "../Classes/Meme.js";
 
 class MemeService {
-    async create(meme) {
-        const createdMeme = await Meme.create(meme)
+    async create(author, pattern_id) {
+        const createdMeme = await Meme.create({author: author, pattern_id: pattern_id})
         return createdMeme
     }
 

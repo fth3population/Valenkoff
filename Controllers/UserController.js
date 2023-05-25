@@ -1,6 +1,9 @@
 import UserService from "../Services/UserService.js";
 import ApiError from "../exceptions/api-error.js";
 import {validationResult} from "express-validator";
+import User from "../Classes/User.js";
+import user from "../Classes/User.js";
+import PatternController from "./PatternController.js";
 
 
 class UserController{
@@ -28,6 +31,53 @@ class UserController{
             return res.json(user)
         }catch (e){
             next(e);
+        }
+    }
+
+    async getAllMemes(req, res, next){
+        try{
+            const memes = await UserService.getAllMemes(req.params.id)
+            return res.json(memes)
+        }catch (e) {
+            next(e)
+        }
+    }
+
+    async addMeme(req, res, next){
+        try{
+            const accessToken = req.headers.accesstoken;
+            const user = await UserService.addMeme(req.params.id, accessToken)
+            return res.json(user)
+        }catch (e){
+            next(e)
+        }
+    }
+
+    async numberOfRegisteredUsers(req, res, next){
+        try{
+            const {startDate, endDate} = req.body;
+            const users = await UserService.numberOfRegisteredUsers(req.params.id, startDate, endDate)
+            return res.json(users)
+        }catch (e) {
+            next(e)
+        }
+    }
+
+    async getAllLikedPatterns(req, res, next){
+        try{
+            const patterns = await UserService.getAllLikedPatterns(req.params.id)
+            return res.json(patterns)
+        }catch (e) {
+            next(e)
+        }
+    }
+
+    async addLike(req, res, next){
+        try{
+            const user = await UserService.addLike(req.headers.accesstoken, req.params.id)
+            return res.json(user)
+        }catch (e) {
+            next(e)
         }
     }
 
