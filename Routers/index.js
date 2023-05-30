@@ -1,12 +1,14 @@
 import {Router} from "express";
 import UserController from "../Controllers/UserController.js";
 import PatternController from "../Controllers/PatternController.js";
+import cors from "cors";
 
 import {body} from "express-validator";
 import authMiddleware from "../middlewares/auth-middleware.js";
 import MemeController from "../Controllers/MemeController.js";
 
 const index = new Router()
+index.use(cors())
 
 index.post('/register',
     body('username').notEmpty(),
