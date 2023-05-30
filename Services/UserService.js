@@ -1,13 +1,11 @@
 import User from "../Classes/User.js";
 import bcrypt from 'bcrypt'
 import TokenService from "./TokenService.js";
-import tokenService from "./TokenService.js";
 import UserDto from "../dtos/user-dto.js";
 import ApiError from "../exceptions/api-error.js";
 import MemeService from "./MemeService.js";
 import Meme from "../Classes/Meme.js";
 import Pattern from "../Classes/Pattern.js";
-import Token from "../Classes/Token.js";
 
 class UserService {
 
@@ -21,9 +19,9 @@ class UserService {
 
         const userDto = new UserDto(user)
         const tokens = TokenService.generateTokens({...userDto})
-        await tokenService.saveToken(userDto.id, tokens.refreshToken, tokens.accessToken)
+        await TokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return {...tokens, user: userDto}
+        return {...tokens}
     }
 
     async login(email, password){
@@ -37,25 +35,38 @@ class UserService {
         }
         const userDto = new UserDto(user)
         const tokens = TokenService.generateTokens({...userDto})
-        await tokenService.saveToken(userDto.id, tokens.refreshToken, tokens.accessToken)
+        await TokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return {...tokens, user: userDto}
+        return {...tokens}
     }
 
-    async addMeme(pattern_id, accessToken){
-        if (!accessToken) {
-            throw ApiError.BadRequest('Не указан токен')
+    async logout(refreshToken){
+        const token = await TokenService.removeToken(refreshToken);
+        return token;
+    }
+
+    async refresh(refreshToken){
+        if(!refreshToken){
+            throw ApiError.UnathorizedError()
         }
+        const userData = TokenService.validateRefreshToken(refreshToken)
+        const tokenFromDb = await TokenService.findToken(refreshToken)
+        if(!userData||!tokenFromDb){
+            throw ApiError.UnathorizedError()
+        }
+        const user = await User.findById(userData.id)
+        const userDto = new UserDto(user)
+        const tokens = TokenService.generateTokens({...userDto})
+        await TokenService.saveToken(userDto.id, tokens.refreshToken)
+
+        return {...tokens}
+    }
+
+    async addMeme(pattern_id, user_id){
         if(!pattern_id){
             throw ApiError.BadRequest('Не указан ID шаблона')
         }
-        const token = await Token.findOne({
-            accessToken: accessToken
-        })
-        if(!token){
-            throw ApiError.BadRequest("Пользователь с таким токеном не найден")
-        }
-        const user = await User.findById(token.user)
+        const user = await User.findById(user_id)
         const meme = await MemeService.create(user._id, pattern_id)
 
         user.memes.push(meme._id)
@@ -75,13 +86,7 @@ class UserService {
     }
 
     async numberOfRegisteredUsers(id, startDate, endDate){
-        if (!id) {
-            throw ApiError.BadRequest('Не указан ID')
-        }
         const admin = await User.findById(id)
-        if(!admin){
-            throw ApiError.BadRequest('Пользователя с таким ID не существует')
-        }
         if(admin.role != "ADMIN"){
             throw ApiError.BadRequest('У вас нет прав администратора')
         }
@@ -94,20 +99,11 @@ class UserService {
         return users
     }
 
-    async addLike(accessToken, pattern_id){
-        if (!accessToken) {
-            throw ApiError.BadRequest('Не указан токен')
-        }
+    async addLike(user_id, pattern_id){
         if(!pattern_id){
             throw ApiError.BadRequest('Не указан ID шаблона')
         }
-        const token = await Token.findOne({
-            accessToken: accessToken
-        })
-        if(!token){
-            throw ApiError.BadRequest("Пользователь с таким токеном не найден")
-        }
-        const user = await User.findById(token.user)
+        const user = await User.findById(user_id)
         const pattern = await Pattern.findById(pattern_id)
         if(!pattern){
             throw ApiError.BadRequest("Шаблон не найден")
@@ -122,16 +118,12 @@ class UserService {
     }
 
     async getAllLikedPatterns(id){
-        if (!id) {
-            throw ApiError.BadRequest('Не указан ID')
-        }
         const user = await User.findById(id)
         const patterns = await Pattern.find({
             _id:{$in: user.likes}
         });
         return patterns
     }
-
 
 
     async create(username, email, password, likes) {

@@ -1,9 +1,7 @@
 import UserService from "../Services/UserService.js";
 import ApiError from "../exceptions/api-error.js";
 import {validationResult} from "express-validator";
-import User from "../Classes/User.js";
-import user from "../Classes/User.js";
-import PatternController from "./PatternController.js";
+import userService from "../Services/UserService.js";
 
 
 class UserController{
@@ -15,7 +13,7 @@ class UserController{
             }
             const{username, email, password} = req.body
             const user = await UserService.registration(username, email, password)
-            res.cookie('refreshToken', user.refreshToken, {maxAge: 60 * 1000, httpOnly: true})
+            res.cookie('refreshToken', user.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
             return res.json(user)
         }
         catch (e){
@@ -27,7 +25,29 @@ class UserController{
         try {
             const{email, password} = req.body
             const user = await UserService.login(email, password)
-            res.cookie('refreshToken', user.refreshToken, {maxAge: 60 * 1000, httpOnly: true})
+            res.cookie('refreshToken', user.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
+            return res.json(user)
+        }catch (e){
+            next(e);
+        }
+    }
+
+    async logout(req, res, next){
+        try {
+            const {refreshToken} = req.cookies;
+            const token = await userService.logout(refreshToken);
+            res.clearCookie('refreshToken');
+            return res.json(token)
+        }catch (e) {
+            next(e)
+        }
+    }
+
+    async refresh(req, res,next){
+        try {
+            const {refreshToken} = req.cookies
+            const user = await UserService.refresh(refreshToken)
+            res.cookie('refreshToken', user.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
             return res.json(user)
         }catch (e){
             next(e);
@@ -36,7 +56,7 @@ class UserController{
 
     async getAllMemes(req, res, next){
         try{
-            const memes = await UserService.getAllMemes(req.params.id)
+            const memes = await UserService.getAllMemes(req.user.id)
             return res.json(memes)
         }catch (e) {
             next(e)
@@ -45,8 +65,7 @@ class UserController{
 
     async addMeme(req, res, next){
         try{
-            const accessToken = req.headers.accesstoken;
-            const user = await UserService.addMeme(req.params.id, accessToken)
+            const user = await UserService.addMeme(req.params.id, req.user.id)
             return res.json(user)
         }catch (e){
             next(e)
@@ -56,7 +75,7 @@ class UserController{
     async numberOfRegisteredUsers(req, res, next){
         try{
             const {startDate, endDate} = req.body;
-            const users = await UserService.numberOfRegisteredUsers(req.params.id, startDate, endDate)
+            const users = await UserService.numberOfRegisteredUsers(req.user.id, startDate, endDate)
             return res.json(users)
         }catch (e) {
             next(e)
@@ -65,7 +84,7 @@ class UserController{
 
     async getAllLikedPatterns(req, res, next){
         try{
-            const patterns = await UserService.getAllLikedPatterns(req.params.id)
+            const patterns = await UserService.getAllLikedPatterns(req.user.id)
             return res.json(patterns)
         }catch (e) {
             next(e)
@@ -74,7 +93,7 @@ class UserController{
 
     async addLike(req, res, next){
         try{
-            const user = await UserService.addLike(req.headers.accesstoken, req.params.id)
+            const user = await UserService.addLike(req.user.id, req.params.id)
             return res.json(user)
         }catch (e) {
             next(e)
@@ -87,14 +106,6 @@ class UserController{
             res.status(200).json(user)
         }
         catch (e){
-            next(e);
-        }
-    }
-
-    async refresh(req, res,next){
-        try {
-
-        }catch (e){
             next(e);
         }
     }

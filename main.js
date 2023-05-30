@@ -3,9 +3,7 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
-import routerUser from "./Routers/routerUser.js";
-import routerMeme from "./Routers/routerMeme.js";
-import routerPattern from "./Routers/routerPattern.js";
+import index from "./Routers/index.js";
 import errorMiddleware from "./middlewares/error-middleware.js";
 
 dotenv.config()
@@ -18,9 +16,7 @@ app.use(express.json())
 app.use(fileUpload({}))
 app.use(cookieParser())
 app.use(express.static('static'))
-app.use('/api_memes', routerMeme)
-app.use('/api_patterns', routerPattern)
-app.use('/api', routerUser)
+app.use('/api', index)
 app.use(errorMiddleware)
 
 async function startApp() {
