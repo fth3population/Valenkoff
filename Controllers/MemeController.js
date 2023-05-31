@@ -3,7 +3,7 @@ import MemeService from "../Services/MemeService.js";
 class MemeController{
     async create(req, res){
         try {
-            const meme = await MemeService.create(req.body)
+            const meme = await MemeService.create(req.body, req.files.img)
             res.status(200).json(meme)
         }
         catch (e){

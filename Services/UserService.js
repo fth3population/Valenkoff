@@ -6,6 +6,7 @@ import ApiError from "../exceptions/api-error.js";
 import MemeService from "./MemeService.js";
 import Meme from "../Classes/Meme.js";
 import Pattern from "../Classes/Pattern.js";
+import fileService from "./FileService.js";
 
 class UserService {
 
@@ -62,12 +63,15 @@ class UserService {
         return {...tokens}
     }
 
-    async addMeme(pattern_id, user_id){
+    async addMeme(pattern_id, user_id, img){
+        if(!img){
+            throw ApiError.BadRequest('Нет картинки')
+        }
         if(!pattern_id){
             throw ApiError.BadRequest('Не указан ID шаблона')
         }
         const user = await User.findById(user_id)
-        const meme = await MemeService.create(user._id, pattern_id)
+        const meme = await MemeService.create(user._id, pattern_id, img)
 
         user.memes.push(meme._id)
         await user.save()

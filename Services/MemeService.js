@@ -1,8 +1,10 @@
 import Meme from "../Classes/Meme.js";
+import fileService from "./FileService.js";
 
 class MemeService {
-    async create(author, pattern_id) {
-        const createdMeme = await Meme.create({author: author, pattern_id: pattern_id})
+    async create(author, pattern_id, img) {
+        const fileName = fileService.saveFile(img)
+        const createdMeme = await Meme.create({author: author, pattern_id: pattern_id, img: fileName})
         return createdMeme
     }
 

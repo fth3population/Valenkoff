@@ -65,7 +65,7 @@ class UserController{
 
     async addMeme(req, res, next){
         try{
-            const user = await UserService.addMeme(req.params.id, req.user.id)
+            const user = await UserService.addMeme(req.params.id, req.user.id, req.files.img)
             return res.json(user)
         }catch (e){
             next(e)
