@@ -32,5 +32,7 @@ index.post('/patterns/:id', authMiddleware, UserController.addLike)
 index.get('/patterns', authMiddleware, UserController.getAllLikedPatterns)
 index.get('/all_patterns',PatternController.getAll)
 index.get('/all_memes', MemeController.getAll)
+index.get('/patterns_by_uses', authMiddleware, UserController.getSortedPatternsByUses)
+index.get('/patterns_by_likes', authMiddleware, UserController.getSortedPatternsByLikes)
 
 export default index;

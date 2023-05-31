@@ -91,6 +91,24 @@ class UserController{
         }
     }
 
+    async getSortedPatternsByUses(req, res, next){
+        try{
+            const patterns = await UserService.getSortedPatternsByUses(req.user.id)
+            return res.json(patterns)
+        }catch (e) {
+            next(e)
+        }
+    }
+
+    async getSortedPatternsByLikes(req, res, next){
+        try {
+            const patterns = await UserService.getSortedPatternsByLikes(req.user.id)
+            return res.json(patterns)
+        }catch (e) {
+            next(e)
+        }
+    }
+
     async addLike(req, res, next){
         try{
             const user = await UserService.addLike(req.user.id, req.params.id)

@@ -15,7 +15,8 @@ const DB_URL = process.env.DB_URL
 app.use(express.json())
 app.use(fileUpload({}))
 app.use(cookieParser())
-app.use(express.static('static'))
+app.use('/static/patterns',express.static('static/patterns'))
+app.use('/static/memes',express.static('static/memes'))
 app.use('/api', index)
 app.use(errorMiddleware)
 

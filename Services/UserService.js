@@ -72,9 +72,11 @@ class UserService {
         }
         const user = await User.findById(user_id)
         const meme = await MemeService.create(user._id, pattern_id, img)
-
+        const pattern = await Pattern.findById(pattern_id)
+        pattern.numberOfUses++
         user.memes.push(meme._id)
         await user.save()
+        await pattern.save()
         return {user: user, meme:meme}
     }
 
@@ -115,7 +117,6 @@ class UserService {
 
         user.likes.push(pattern_id)
         pattern.userLikes.push(user._id)
-        pattern.numberOfUses++
         await user.save()
         await pattern.save()
         return {user, pattern}
@@ -126,6 +127,27 @@ class UserService {
         const patterns = await Pattern.find({
             _id:{$in: user.likes}
         });
+        return patterns
+    }
+
+    async getSortedPatternsByUses(id){
+        const admin = await User.findById(id)
+        if(admin.role != "ADMIN"){
+            throw ApiError.BadRequest('У вас нет прав администратора')
+        }
+        const patterns = await Pattern.find().sort({numberOfUses:-1})
+        return patterns
+    }
+
+    async getSortedPatternsByLikes(id){
+        const admin = await User.findById(id)
+        if(admin.role != "ADMIN"){
+            throw ApiError.BadRequest('У вас нет прав администратора')
+        }
+        const patterns = await Pattern.aggregate([
+            {$addFields:{likes_count: {$size:"$userLikes"}}},
+            {$sort: {"likes_count": -1}}
+        ])
         return patterns
     }
 

@@ -2,15 +2,15 @@ import * as uuid from 'uuid';
 import * as path from 'path';
 
 class FileService{
-    saveFile(file){
+    saveFile(file, key, next){
         try {
             const fileName = uuid.v4() + '.jpg';
-            const filePath = path.resolve('static', fileName);
+            const filePath = path.resolve(key == 'meme'? 'static/memes':'static/patterns', fileName);
             file.mv(filePath);
             return fileName;
         }
         catch (e){
-            console.log(e);
+            next(e)
         }
     }
 }
