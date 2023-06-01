@@ -23,7 +23,7 @@ class UserService {
         const tokens = TokenService.generateTokens({...userDto})
         await TokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return {...tokens}
+        return {...tokens, userDto}
     }
 
     async login(email, password){
@@ -39,7 +39,7 @@ class UserService {
         const tokens = TokenService.generateTokens({...userDto})
         await TokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return {...tokens}
+        return {...tokens, userDto}
     }
 
     async logout(refreshToken){
@@ -61,7 +61,7 @@ class UserService {
         const tokens = TokenService.generateTokens({...userDto})
         await TokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return {...tokens}
+        return {...tokens, userDto}
     }
 
     async addMeme(pattern_id, user_id, img){
