@@ -127,6 +127,15 @@ class UserController{
         }
     }
 
+    async deleteLike(req, res, next){
+        try{
+            const user = await UserService.deleteLike(req.user.id, req.params.id)
+            return res.json(user)
+        }catch (e) {
+            next(e)
+        }
+    }
+
     async create(req, res,next){
         try {
             const user = await UserService.create(req.body)

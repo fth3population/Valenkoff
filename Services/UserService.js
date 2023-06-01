@@ -7,6 +7,7 @@ import MemeService from "./MemeService.js";
 import Meme from "../Classes/Meme.js";
 import Pattern from "../Classes/Pattern.js";
 import fileService from "./FileService.js";
+import mongoose from "mongoose";
 
 class UserService {
 
@@ -120,6 +121,21 @@ class UserService {
         await user.save()
         await pattern.save()
         return {user, pattern}
+    }
+
+    async deleteLike(user_id, pattern_id){
+        if(!pattern_id){
+            throw ApiError.BadRequest('Не указан ID шаблона')
+        }
+        const updatedUser = await User.updateOne(
+            {_id:user_id},
+            {$pull: {likes: pattern_id}},
+            )
+        const updatedPattern = await Pattern.updateOne(
+            {_id: pattern_id},
+            {$pull: {userLikes: user_id}}
+        )
+        return {updatedUser, updatedPattern}
     }
 
     async getAllLikedPatterns(id){
