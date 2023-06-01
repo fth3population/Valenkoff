@@ -39,5 +39,6 @@ index.get('/all_memes', MemeController.getAll)
 index.get('/patterns_by_uses', authMiddleware, UserController.getSortedPatternsByUses)
 index.get('/patterns_by_likes', authMiddleware, UserController.getSortedPatternsByLikes)
 index.get('/user_role', authMiddleware, UserController.getUserRole)
+index.get('/patterns/:id', PatternController.getOne)
 
 export default index;

@@ -1,4 +1,5 @@
 import PatternService from "../Services/PatternService.js";
+import UserService from "../Services/UserService.js";
 
 class PatternController{
     async create(req, res, next){
@@ -21,13 +22,13 @@ class PatternController{
         }
     }
 
-    async getOne(req, res){
+    async getOne(req, res,next){
         try {
             const pattern = await PatternService.getOne(req.params.id)
             return res.json(pattern)
         }
         catch (e){
-            res.status(500).json(e.message)
+            next(e)
         }
     }
 

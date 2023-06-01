@@ -1,5 +1,6 @@
 import Pattern from "../Classes/Pattern.js";
 import fileService from "./FileService.js";
+import ApiError from "../exceptions/api-error.js";
 
 class PatternService {
     async create(data, img) {
@@ -15,7 +16,7 @@ class PatternService {
 
     async getOne(id) {
         if (!id) {
-            throw new Error('Не указан ID')
+            throw ApiError('Не указан ID')
         }
         const pattern = await Pattern.findById(id);
         return pattern
