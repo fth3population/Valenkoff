@@ -151,6 +151,14 @@ class UserService {
         return patterns
     }
 
+    async getUserRole(id){
+        const user = await User.findById(id)
+        if(!user){
+            throw ApiError('Такого пользователя не существует')
+        }
+        return user.role
+    }
+
 
     async create(username, email, password, likes) {
         const createdUser = await User.create({username: username, email: email, password: password, likes: likes})

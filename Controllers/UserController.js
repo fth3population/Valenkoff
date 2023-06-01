@@ -109,6 +109,15 @@ class UserController{
         }
     }
 
+    async getUserRole(req, res, next){
+        try {
+            const role = await UserService.getUserRole(req.user.id)
+            return res.json(role)
+        }catch (e) {
+            next(e)
+        }
+    }
+
     async addLike(req, res, next){
         try{
             const user = await UserService.addLike(req.user.id, req.params.id)
