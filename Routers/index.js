@@ -8,7 +8,10 @@ import authMiddleware from "../middlewares/auth-middleware.js";
 import MemeController from "../Controllers/MemeController.js";
 
 const index = new Router()
-index.use(cors())
+index.use(cors({
+    credentials: true,
+    origin: "http://localhost:3000"
+}));
 
 index.post('/register',
     body('username').notEmpty(),
