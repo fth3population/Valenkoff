@@ -65,6 +65,9 @@ class UserController{
 
     async addMeme(req, res, next){
         try{
+            if(!req.files){
+                throw ApiError.BadRequest('Не передана картинка')
+            }
             const user = await UserService.addMeme(req.params.id, req.user.id, req.files.img)
             return res.json(user)
         }catch (e){

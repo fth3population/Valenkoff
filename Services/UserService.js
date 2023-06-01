@@ -65,9 +65,6 @@ class UserService {
     }
 
     async addMeme(pattern_id, user_id, img){
-        if(!img){
-            throw ApiError.BadRequest('Нет картинки')
-        }
         if(!pattern_id){
             throw ApiError.BadRequest('Не указан ID шаблона')
         }
